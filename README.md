@@ -1,0 +1,2 @@
+# iHateBrainrot
+first script
