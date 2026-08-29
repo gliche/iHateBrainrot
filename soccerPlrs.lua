@@ -1,5 +1,7 @@
 local base
-
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
+local tab = window:CreateTab("Home", 4483362458) 
+local dangerTab = window:CreateTab("Danger Zone", 4483362458)
 for i, v in ipairs(workspace.Plots:GetDescendants()) do
 	if v.Name == "owner" and v.Value == plr.Name then
 		base = v.Parent
