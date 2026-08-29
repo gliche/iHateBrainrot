@@ -39,16 +39,8 @@ if getgenv().loaded and getgenv().window then
     getgenv().window:Unload()
 end
 
-local window = Rayfield:CreateWindow({
-    Name = "Gliched's Brainrot Destroyer",
-    LoadingTitle = "Gliched's Brainrot Destroyer",
-    LoadingSubtitle = "made by Gliched <3"
-})
-
 getgenv().window = window
 getgenv().loaded = true
-
-
 
 local currentGameScript = brainrotGames[tostring(game.GameId)] or brainrotGames[tostring(game.PlaceId)]
 
