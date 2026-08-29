@@ -18,7 +18,7 @@ local function loadPrivateScript(filePath, key)
         loadstring(response.Body)()
     else
         print("access denied")
-        plr:Kick("Access Denied: Invalid Key!")
+        plr:Kick("Your script key is ass or missing.")
     end
 end
 
