@@ -30,8 +30,6 @@ local fallingBrainrotsScript = function()
     loadPrivateScript("falling.lua", USER_KEY)
 end
 
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
-
 local brainrotGames = {
     ["133294838637122"] = soccrPlayerScript, 
     ["86368783421928"] = fallingBrainrotsScript,
@@ -50,8 +48,7 @@ local window = Rayfield:CreateWindow({
 getgenv().window = window
 getgenv().loaded = true
 
-local tab = window:CreateTab("Home", 4483362458)
-local dangerTab = window:CreateTab("Danger Zone", 4483362458)
+
 
 local currentGameScript = brainrotGames[tostring(game.GameId)] or brainrotGames[tostring(game.PlaceId)]
 
