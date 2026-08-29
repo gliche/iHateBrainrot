@@ -2,12 +2,32 @@ local plr = game.Players.LocalPlayer
 local chr = plr.Character or plr.CharacterAdded:Wait()
 local hrp = chr:WaitForChild("HumanoidRootPart")
 
+local USER_KEY = script_key or getgenv().script_key or ""
+
+local function loadPrivateScript(filePath, key)
+    local url = "https://raw.githubusercontent.com/gliche/iHateBrainrot/main/" .. filePath
+    local httpRequest = (syn and syn.request) or (http and http.request) or http_request or request
+
+    local response = httpRequest({
+        Url = url,
+        Method = "GET",
+        Headers = { ["Authorization"] = "token github_pat_" .. key }
+    })
+
+    if response and response.StatusCode == 200 then
+        loadstring(response.Body)()
+    else
+        print("access denied")
+        plr:Kick("Access Denied: Invalid Key!")
+    end
+end
+
 local soccrPlayerScript = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/gliche/iHateBrainrot/refs/heads/main/soccerPlrs.lua?token=GHSAT0AAAAAAEER47YQ2WZ6GVZV3P3JXNLK2USIKGQ"))()
+    loadPrivateScript("soccerPlrs.lua", USER_KEY)
 end
 
 local fallingBrainrotsScript = function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/gliche/iHateBrainrot/refs/heads/main/falling.lua?token=GHSAT0AAAAAAEER47YRXPRIH4EJNXCWJIS62USIIFA"))()
+    loadPrivateScript("falling.lua", USER_KEY)
 end
 
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
@@ -24,10 +44,7 @@ end
 local window = Rayfield:CreateWindow({
     Name = "Gliched's Brainrot Destroyer",
     LoadingTitle = "Gliched's Brainrot Destroyer",
-    LoadingSubtitle = "made by Gliched <3",
-    ConfigurationSaving = {
-        Enabled = false
-    }
+    LoadingSubtitle = "made by Gliched <3"
 })
 
 getgenv().window = window
@@ -41,5 +58,5 @@ local currentGameScript = brainrotGames[tostring(game.GameId)] or brainrotGames[
 if currentGameScript then
     currentGameScript()
 else
-	plr:Kick("The game you are playing isn't supported yet.")
+    plr:Kick("The game you are playing isn't supported yet.")
 end
