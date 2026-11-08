@@ -17,7 +17,7 @@ local Window = NeverLose:CreateWindow({
 Window:AddTabLabel("Main")
 
 local MainTab = Window:AddTab({
-    Name = "Main",
+	Name = "Main",
 })
 
 local FarmingSection = MainTab:AddSection({
@@ -33,11 +33,11 @@ local Set3DRendering = FarmingSection:AddLabel("3D Rendering")
 
 globalenv.AutoCollectEggs = false
 globalenv.AutoDeposit = false
-globalenv.AutoBuyChickens = false  
+globalenv.AutoBuyChickens = false
 globalenv.AutoBuyChickensAmount = nil
 globalenv.SmartDeposit = false
 globalenv.AutoMerge = false
-
+globalenv.DepositDebounce = nil
 --[[local Settings = {
     ["AutoBuyChickens"] = true,
     ["AutoBuyChickensAmount"] = 100, --options are 1, 5, 25, 100 anything else errors the script
@@ -52,8 +52,11 @@ globalenv.AutoMerge = false
 
 local function SmartDeposit()
 	local Multiplier = game:GetService("ReplicatedStorage").Values.EggMultiplier
-	if Multiplier.Value > 1 then
+	if Multiplier.Value > 1 and not globalenv.DepositDebounce then
+		globalenv.DepositDebounce = true
 		RemoteFunction:InvokeServer("Deposit Eggs")
+		task.wait(5)
+		globalenv.DepositDebounce = false
 	end
 end
 
@@ -72,7 +75,7 @@ local function GetDoubleEggs()
 		firetouchinterest(ClaimRewardPart, LocalPlayer.Character.HumanoidRootPart, 0)
 		firetouchinterest(ClaimRewardPart, LocalPlayer.Character.HumanoidRootPart, 1)
 	end
-end 
+end
 
 local RunService = game:GetService("RunService")
 if false then
@@ -86,9 +89,9 @@ globalenv.MainLoop = task.spawn(function()
 		RemoteFunction:InvokeServer("Collect Cash")
 
 		if globalenv.AutoDeposit then
-            if globalenv.SmartDeposit then
-                SmartDeposit()
-            end
+			if globalenv.SmartDeposit then
+				SmartDeposit()
+			end
 			RemoteFunction:InvokeServer("Deposit Eggs")
 		end
 
@@ -100,13 +103,15 @@ globalenv.MainLoop = task.spawn(function()
 			RemoteFunction:InvokeServer("Merge Chickens")
 		end
 
-        if globalenv.GetDoubleEggsDone then
-            GetDoubleEggs()
-        end
-
-		for i, v in ipairs(EggsFolder:GetChildren()) do
-			CollectEggsFunction:FireServer("Collect Egg", v.Name)
-			v:Destroy()
+		if globalenv.GetDoubleEggsDone then
+			GetDoubleEggs()
+		end
+		if globalenv.AutoCollectEggs then
+			CollectEggsFunction:FireServer("Collect All Eggs")
+			for i, v in ipairs(EggsFolder:GetChildren()) do
+				CollectEggsFunction:FireServer("Collect Egg", v.Name)
+				v:Destroy()
+			end
 		end
 	end
 end)
@@ -114,16 +119,16 @@ end)
 ACLabel:AddToggle({
 	Default = true,
 	Callback = function(value)
-        globalenv.AutoCollectEggs = value
-    end,
+		globalenv.AutoCollectEggs = value
+	end,
 	Flag = "ACEggs",
 })
 
 ABLabel:AddToggle({
 	Default = true,
 	Callback = function(value)
-        globalenv.AutoBuyChickens = value
-    end,
+		globalenv.AutoBuyChickens = value
+	end,
 	Flag = "ABEggs",
 })
 
@@ -131,51 +136,51 @@ ABLabel:AddOption():AddLabel("Amount"):AddDropdown({
 	Default = "100",
 	Values = { "1", "5", "25", "100" },
 	Callback = function(value)
-        globalenv.AutoBuyChickensAmount = tonumber(value)
-    end,
+		globalenv.AutoBuyChickensAmount = tonumber(value)
+	end,
 	Flag = "ABEggsAmount",
 })
 
 ADLabel:AddToggle({
 	Default = true,
 	Callback = function(value)
-        globalenv.AutoDeposit = value
-    end,
+		globalenv.AutoDeposit = value
+	end,
 	Flag = "ADEggs",
 })
 
 ADLabel:AddOption():AddLabel("Smart Deposit"):AddToggle({
 	Default = true,
 	Callback = function(value)
-        globalenv.SmartDeposit = value
-    end,
+		globalenv.SmartDeposit = value
+	end,
 	Flag = "SmartDeposit",
 })
 
 AutoMergeLabel:AddToggle({
-    Default = true,
-    Callback = function(value)
-        globalenv.AutoMerge = value
-    end,
-    Flag = "AutoMerge",
+	Default = true,
+	Callback = function(value)
+		globalenv.AutoMerge = value
+	end,
+	Flag = "AutoMerge",
 })
 
 TwoTimesEggsLabel:AddToggle({
 	Default = true,
 	Callback = function(value)
-        globalenv.GetDoubleEggsDone = value
-    end,
+		globalenv.GetDoubleEggsDone = value
+	end,
 	Flag = "TwoTimesEggs",
 })
 
 Set3DRendering:AddToggle({
-    Default = true,
-    Callback = function(value)
-        if not value then
-            RunService:Set3dRenderingEnabled(false)
-        else
-            RunService:Set3dRenderingEnabled(true)
-        end
-    end,
-    Flag = "Set3DRendering",
+	Default = true,
+	Callback = function(value)
+		if not value then
+			RunService:Set3dRenderingEnabled(false)
+		else
+			RunService:Set3dRenderingEnabled(true)
+		end
+	end,
+	Flag = "Set3DRendering",
 })
