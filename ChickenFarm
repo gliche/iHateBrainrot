@@ -1,3 +1,7 @@
+if game.GameId ~= 10209534490 then
+	game.Players.LocalPlayer:Kick("This game isn't supported.")
+end
+
 local RemoteFunction = game:GetService("ReplicatedStorage").Paper.Remotes.__remotefunction
 local CollectEggsFunction = game:GetService("ReplicatedStorage").Paper.Remotes.__remoteevent
 local EggsFolder = workspace.Eggs
