@@ -1,9 +1,12 @@
 local abyssalPart = CFrame.new(376, -1913, -1467)
 local transcendentPart = CFrame.new(448, -6923, -741)
 local supremePart = CFrame.new(456, -11018, -949)
+local plr = game.Players.LocalPlayer
+local chr = plr.Character
+local hrp = chr.HumanoidRootPart
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
-local tab = window:CreateTab("Home", 4483362458) 
-local dangerTab = window:CreateTab("Danger Zone", 4483362458)
+local tab = window:CreateTab({name = "Home", icon = 4483362458}) 
+local dangerTab = window:CreateTab({name = "Danger Tab", icon = 4483362458})
 
 local function autoBrainrot(loadPart, sec)
 	hrp.CFrame = loadPart
