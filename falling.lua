@@ -5,6 +5,11 @@ local plr = game.Players.LocalPlayer
 local chr = plr.Character
 local hrp = chr.HumanoidRootPart
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
+local window =  Rayfield:CreateWindow({
+    name = "Fall For Brainrots",
+    subtitle = "justanub.script",
+    sidebarLoadout = true
+})
 local tab = window:CreateTab({name = "Home", icon = 4483362458}) 
 local dangerTab = window:CreateTab({name = "Danger Tab", icon = 4483362458})
 
