@@ -8,8 +8,14 @@ local EggsFolder = workspace.Eggs
 local globalenv = getgenv()
 local NeverLose = loadstring(game:HttpGet("https://git.gay/Cobruhehe/Neverlose/raw/branch/main/source.luau"))()
 local LocalPlayer = game.Players.LocalPlayer
+NeverLose.UnloadEnabled = true
+
+if globalenv.ScriptLoadedExists then
+	globalenv.ScriptLoadedExists()
+end
+
 local Window = NeverLose:CreateWindow({
-	Logo = "rbxassetid://111183328534996",
+	Logo = "rbxassetid://78782261228765",
 	Name = "Chicken Farm",
 	Content = "justanub.script",
 	Size = NeverLose.Scales.Default,
@@ -22,19 +28,34 @@ Window:AddTabLabel("Main")
 
 local MainTab = Window:AddTab({
 	Name = "Main",
+	Icon = "egg"
 })
 
+Window:AddTabLabel("Misc")
+
+local MiscTab = Window:AddTab({
+	Name = "Misc",
+	Icon = "circle-three-dots-horizontal"
+})
 local FarmingSection = MainTab:AddSection({
 	Name = "Farming",
 })
+local MiscSection = MainTab:AddSection({
+	Name = "Misc",
+})	
 
+local MiscSection2 = MiscTab:AddSection({
+	Name = "Danger Zone",
+})
+--FarmingSection Labels
 local ACLabel = FarmingSection:AddLabel("Auto Collect Eggs")
 local ADLabel = FarmingSection:AddLabel("Auto Deposit Eggs")
 local ABLabel = FarmingSection:AddLabel("Auto Buy Chickens")
 local TwoTimesEggsLabel = FarmingSection:AddLabel("Auto Claim 2x Eggs")
 local AutoMergeLabel = FarmingSection:AddLabel("Auto Merge Chickens")
 local Set3DRendering = FarmingSection:AddLabel("3D Rendering")
-
+--Misc Labels
+local RateLabel = MiscSection:AddLabel("Rate")
 globalenv.AutoCollectEggs = false
 globalenv.AutoDeposit = false
 globalenv.AutoBuyChickens = false
@@ -42,6 +63,7 @@ globalenv.AutoBuyChickensAmount = nil
 globalenv.SmartDeposit = false
 globalenv.AutoMerge = false
 globalenv.DepositDebounce = nil
+globalenv.Rate = 0.1
 --[[local Settings = {
     ["AutoBuyChickens"] = true,
     ["AutoBuyChickensAmount"] = 100, --options are 1, 5, 25, 100 anything else errors the script
@@ -59,8 +81,10 @@ local function SmartDeposit()
 	if Multiplier.Value > 1 and not globalenv.DepositDebounce then
 		globalenv.DepositDebounce = true
 		RemoteFunction:InvokeServer("Deposit Eggs")
-		task.wait(5)
-		globalenv.DepositDebounce = false
+		task.spawn(function()
+			task.wait(5)
+			globalenv.DepositDebounce = false
+		end)	
 	end
 end
 
@@ -89,7 +113,7 @@ else
 end
 
 globalenv.MainLoop = task.spawn(function()
-	while task.wait(0.1) do
+	while task.wait(globalenv.Rate) do
 		RemoteFunction:InvokeServer("Collect Cash")
 
 		if globalenv.AutoDeposit then
@@ -119,6 +143,11 @@ globalenv.MainLoop = task.spawn(function()
 		end
 	end
 end)
+
+globalenv.ScriptLoadedExists = function()
+	task.cancel(globalenv.MainLoop)
+	NeverLose:Unload()
+end
 
 ACLabel:AddToggle({
 	Default = true,
@@ -177,6 +206,18 @@ TwoTimesEggsLabel:AddToggle({
 	Flag = "TwoTimesEggs",
 })
 
+RateLabel:AddSlider({
+	Min = 0.01,
+	Max = 5,
+	Rounding = 2,
+	Type = "Seconds",
+	Size= 100,
+	Callback = function(value)
+		globalenv.Rate = value
+	end,
+	Flag = "Rate",
+})
+
 Set3DRendering:AddToggle({
 	Default = true,
 	Callback = function(value)
@@ -188,3 +229,12 @@ Set3DRendering:AddToggle({
 	end,
 	Flag = "Set3DRendering",
 })
+
+MiscSection2:AddButton({
+	Icon = "circle-x",
+	Name = "Unload",
+	Callback = function()
+		globalenv.ScriptLoadedExists()
+	end,
+})
+
